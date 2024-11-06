@@ -103,7 +103,7 @@ module.exports = class ingressoController {
   } 
 
   static async deleteIngresso(req, res) {
-    const idIngresso = req.params.id_ingresso;
+    const idIngresso = req.params.id;
     const query = `DELETE FROM ingresso WHERE id_ingresso = ?`;
     const values = [idIngresso];
     try {

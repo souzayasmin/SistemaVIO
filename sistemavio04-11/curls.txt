@@ -21,4 +21,4 @@ curl --location --request PUT 'http://10.89.240.93:5000/api/v1/ingresso' \
 }'
 
 -- apagando o ingresso
-curl --location --request DELETE 'http://10.89.240.93:5000/api/v1/ingresso/'
+curl --location --request DELETE 'http://10.89.240.93:5000/api/v1/ingresso/3'
