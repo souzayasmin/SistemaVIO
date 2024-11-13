@@ -151,7 +151,6 @@ module.exports = class eventoController {
             dataFiltro[0]
         );
         console.log("Eventos:", eventosDia);
-
         return res
           .status(200)
           .json({ message: "OK", eventosPassados, eventosFuturos });
@@ -159,6 +158,40 @@ module.exports = class eventoController {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erro ao buscar eventos" });
+    }
+  }
+
+  static async getEventosPorData7Dias(req, res) {
+    const dataFiltro = new Date(req.params.data).toISOString().split("T");
+    const dataLimite = new Date(req.params.data); // Converte a data recebida em um objeto Date
+    dataLimite.setDate(dataLimite.getDate() + 7); // Adiciona os dias
+    console.log("Data Fornecida:", dataFiltro, "\n");
+    console.log("Data Limite:", dataLimite, "\n");
+    const query = `SELECT * FROM evento`;
+    try {
+      connect.query(query, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: "Erro ao buscar eventos" });
+        }
+
+        const eventosSelecionados = results.filter(
+          (evento) =>
+            new Date(evento.data_hora).toISOString().split("T")[0] >=
+              dataFiltro[0] &&
+            new Date(evento.data_hora).toISOString().split("T")[0] <
+              dataLimite.toISOString().split("T")[0]
+        );
+
+        console.log(eventosSelecionados);
+
+        return res
+          .status(200)
+          .json({ message: "Eventos: ", eventosSelecionados });
+      });
+    } catch (error) {
+      console.log("Erro ao executar a querry: ", error);
+      return res.status(500).json({ error: "Erro interno do Servidor" });
     }
   }
 };
