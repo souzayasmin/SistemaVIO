@@ -53,23 +53,39 @@ module.exports = class eventoController {
       req.body;
 
     //validação genérica de todos atributos
-    if (!id_evento || !nome ||!descricao ||!data_hora || !local || !fk_id_organizador ) {
+    if (
+      !id_evento ||
+      !nome ||
+      !descricao ||
+      !data_hora ||
+      !local ||
+      !fk_id_organizador
+    ) {
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser prenchidos!" });
     }
     const query = `update evento set nome=?, descricao=?, data_hora=?, local=?, fk_id_organizador=? where id_evento =?`;
-    const values = [nome, descricao, data_hora, local, fk_id_organizador, id_evento];
+    const values = [
+      nome,
+      descricao,
+      data_hora,
+      local,
+      fk_id_organizador,
+      id_evento,
+    ];
     try {
       connect.query(query, values, (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).json({ error: "Erro ao atualizar o evento" });
         }
-        if(results.affectedRows === 0){
-            return res.status(404).json({error: "Erro ao atualizar o evento!"});
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ error: "Erro ao atualizar o evento!" });
         }
-        return res.status(200).json({ message: "Evento atualizado com sucesso!" });
+        return res
+          .status(200)
+          .json({ message: "Evento atualizado com sucesso!" });
       });
     } catch (error) {
       console.log("Erro ao executar consulta:", error);
@@ -89,14 +105,60 @@ module.exports = class eventoController {
         if (results.affectedRows === 0) {
           return res.status(404).json({ error: "Evento não Encontrado" });
         }
-        return res
-          .status(200)
-          .json({ message: "Evento Excluido com Sucesso" });
+        return res.status(200).json({ message: "Evento Excluido com Sucesso" });
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erro Interno do Servidor" });
-    } 
+    }
+  }
+  static async getEventosPorData(req, res) {
+    const query = `SELECT * from evento`;
+
+    try {
+      connect.query(query, (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Erro interno do servidor" });
+        }
+        const dataEvento = new Date(results[0].data_hora);
+        const dia = dataEvento.getDate();
+        const mes = dataEvento.getMonth() + 1;
+        const ano = dataEvento.getFullYear();
+        console.log(dia + "/" + mes + "/" + ano);
+
+        const now = new Date();
+        const eventosPassados = results.filter(
+          (evento) => new Date(evento.data_hora) < now
+        );
+        const eventosFuturos = results.filter(
+          (evento) => new Date(evento.data_hora) >= now
+        );
+
+        const difrencaMs =
+          eventosFuturos[0].data_hora.getTime() - now.getTime();
+        const dias = Math.floor(difrencaMs / (1000 * 60 * 60 * 24));
+        const horas = Math.floor(
+          (difrencaMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        console.log(difrencaMs, "Falta:" + dias + "dias," + horas + "horas.");
+
+        //comparando datas
+        const dataFiltro = new Date("2024-12-15").toISOString().split("T");
+        const eventosDia = results.filter(
+          (evento) =>
+            new Date(evento.data_hora).toISOString().split("T")[0] ===
+            dataFiltro[0]
+        );
+        console.log("Eventos:", eventosDia);
+
+        return res
+          .status(200)
+          .json({ message: "OK", eventosPassados, eventosFuturos });
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao buscar eventos" });
+    }
   }
 };
-
