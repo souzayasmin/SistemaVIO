@@ -21,7 +21,7 @@ function createUser(event) {
 
   // requisição http para o endpoint de cadastro de usuário
 
-  fetch("http://10.89.240.3:5000/api/v1/user", {
+  fetch("http://10.89.240.99:5000/api/v1/user", {
     // realiza uma chamada HTTP para o servidor (a rota definida)
     method: "POST",
     headers: {
@@ -65,7 +65,7 @@ function createUser(event) {
 } // --- function createUser
 
 function getAllUsers() {
-  fetch("http://10.89.240.3:5000/api/v1/user/", {
+  fetch("http://10.89.240.99:5000/api/v1/user/", {
     method: "GET",
     headers: {
       "Content-Type": "application/JSON",
@@ -94,7 +94,7 @@ function getAllUsers() {
     });
 }
 function getAllUsersTable() {
-  fetch("http://10.89.240.3:5000/api/v1/user/", {
+  fetch("http://10.89.240.99:5000/api/v1/user/", {
     method: "GET",
     headers: {
       "Content-Type": "application/JSON",
@@ -113,9 +113,9 @@ function getAllUsersTable() {
       //Limpa a lista antes de adicionar novos itens
       userList.innerHTML = "";
 
-      //Verifica se há usuários retornados e os adiciona a tabela 
+      //Verifica se há usuários retornados e os adiciona a tabela
       data.users.forEach((usuario) => {
-        //Cria uma nova linha 
+        //Cria uma nova linha
         const tr = document.createElement("tr");
 
         //Cria células para nome, cpf e email
@@ -133,7 +133,6 @@ function getAllUsersTable() {
 
         //Adiciona a linha
         userList.appendChild(tr);
-
       });
     })
     .catch((error) => {
@@ -143,7 +142,7 @@ function getAllUsersTable() {
 }
 
 function getAllOrgsTable() {
-  fetch("http://10.89.240.3:5000/api/v1/organizador/", {
+  fetch("http://10.89.240.99:5000/api/v1/organizador/", {
     method: "GET",
     headers: {
       "Content-Type": "application/JSON",
@@ -162,9 +161,9 @@ function getAllOrgsTable() {
       //Limpa a lista antes de adicionar novos itens
       orgList.innerHTML = "";
 
-      //Verifica se há usuários retornados e os adiciona a tabela 
+      //Verifica se há usuários retornados e os adiciona a tabela
       data.organizadores.forEach((organizador) => {
-        //Cria uma nova linha 
+        //Cria uma nova linha
         const tr = document.createElement("tr");
 
         //Cria células para nome, cpf e email
@@ -182,7 +181,6 @@ function getAllOrgsTable() {
 
         //Adiciona a linha
         orgList.appendChild(tr);
-
       });
     })
     .catch((error) => {
